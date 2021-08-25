@@ -22,6 +22,14 @@ const item3 = new Item({ name: "Check on checkbox when you complete item task.",
 
 const defaultItems = [ item1, item2, item3 ];
 
+const listSchema = {
+    name: String,
+    items: [ itemsSchema ]
+};
+
+const List = mongoose.model("List", listSchema);
+
+
 app.get("/", function (req, res) {
     const day = date.getDay();
 
@@ -41,6 +49,27 @@ app.get("/", function (req, res) {
         }
     });
 });
+
+app.get("/:customListName", function (req, res) {
+    const customListName = req.params.customListName
+
+    List.findOne({ name: customListName }, function (err, foundList) {
+        if (!err) {
+            if (!foundList) {
+                const list = new List({
+                    name: customListName,
+                    items: defaultItems
+                });
+
+                list.save();
+                res.redirect("/" + customListName);
+            } else {
+                res.render("list", { listTitle: foundList.name, newListItems: foundList.items });
+            }
+        }
+    });
+});
+
 
 app.post("/", function (req, res) {
     const itemName = req.body.newItem
