@@ -43,15 +43,23 @@ app.get("/", function (req, res) {
 });
 
 app.post("/", function (req, res) {
-
     const itemName = req.body.newItem
-
     const item = new Item({
         name: itemName
     });
     item.save();
     res.redirect("/");
+});
 
+app.post("/delete", function (req, res) {
+    const checkedItemId = req.body.checkbox;
+
+    Item.findByIdAndRemove(checkedItemId, function (err) {
+        if (!err) {
+            console.log("success delete");
+            res.redirect("/");
+        }
+    });
 });
 
 
