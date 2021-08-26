@@ -30,12 +30,12 @@ const listSchema = {
 const List = mongoose.model("List", listSchema);
 
 
-app.get("/", function (req, res) {
+app.get("/", (req, res) => {
 
-    Item.find({}, function (err, foundItems) {
+    Item.find({ }, (err, foundItems) => {
 
         if (foundItems.length === 0) {
-            Item.insertMany(defaultItems, function (err) {
+            Item.insertMany(defaultItems, (err) => {
                 if (err) {
                     console.log(err);
                 } else {
@@ -49,10 +49,10 @@ app.get("/", function (req, res) {
     });
 });
 
-app.get("/:customListName", function (req, res) {
+app.get("/:customListName", (req, res) => {
     const customListName = _.capitalize(req.params.customListName)
 
-    List.findOne({ name: customListName }, function (err, foundList) {
+    List.findOne({ name: customListName }, (err, foundList) => {
         if (!err) {
             if (!foundList) {
                 const list = new List({
@@ -70,7 +70,7 @@ app.get("/:customListName", function (req, res) {
 });
 
 
-app.post("/", function (req, res) {
+app.post("/", (req, res) => {
     const itemName = req.body.newItem;
     const listName = req.body.list;
 
@@ -82,7 +82,7 @@ app.post("/", function (req, res) {
         item.save();
         res.redirect("/");
     } else {
-        List.findOne({ name: listName }, function (err, foundList) {
+        List.findOne({ name: listName }, (err, foundList) => {
             foundList.items.push(item);
             foundList.save();
             res.redirect("/" + listName);
@@ -90,19 +90,19 @@ app.post("/", function (req, res) {
     }
 });
 
-app.post("/delete", function (req, res) {
+app.post("/delete", (req, res) => {
     const checkedItemId = req.body.checkbox;
     const listName = req.body.listName;
 
     if (listName === "Today") {
-        Item.findByIdAndRemove(checkedItemId, function (err) {
+        Item.findByIdAndRemove(checkedItemId, (err) => {
             if (!err) {
                 console.log("success delete");
                 res.redirect("/");
             }
         });
     } else {
-        List.findOneAndUpdate({ name: listName }, { $pull: { items: { _id: checkedItemId } } }, function (err, foundList) {
+        List.findOneAndUpdate({ name: listName }, { $pull: { items: { _id: checkedItemId } } }, (err, foundList) => {
             if (!err) {
                 res.redirect("/" + listName);
             }
@@ -113,14 +113,14 @@ app.post("/delete", function (req, res) {
 });
 
 
-app.get("/work", function (req, res) {
+app.get("/work", (req, res) => {
     res.render("list", { listTitle: "Work List", newListItems: workItems });
 });
 
-app.get("/about", function (req, res) {
+app.get("/about", (req, res) => {
     res.render("about");
 });
 
-app.listen(3000, function (req, res) {
+app.listen(3000, (req, res) => {
     console.log("Server started at 3000")
 });
