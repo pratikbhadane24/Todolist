@@ -2,4 +2,4 @@
 
 TO DO LIST WEB APP
 
-NOTE: Guided Project Not built by me
+NOTE: This is a Guided Project not my idea.
